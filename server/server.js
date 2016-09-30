@@ -7,7 +7,7 @@ var assert        = require('assert')
 var Sequelize     = require('sequelize')
 var _             = require('lodash')
 
-var sequelize = new Sequelize('dungeon', 'root', 'password', {
+var sequelize = new Sequelize('crawler', 'root', 'password', {
   host: 'localhost',
   dialect: 'mysql',
   pool: {
@@ -26,8 +26,10 @@ http.listen(3000)
 
 global.io         = require('socket.io')(http);
 
+var models   = require('./models')(sequelize)
+
 io.on('connection', (socket) => {
-  console.log('connected')
+  console.log('Connection.')
 })
 
 console.log('Server started.')
