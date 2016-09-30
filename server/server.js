@@ -30,6 +30,7 @@ var models   = require('./models')(sequelize)
 
 io.on('connection', (socket) => {
   console.log('Connection.')
+  this.bindings = require('./bindings')(socket)
 })
 
 console.log('Server started.')
