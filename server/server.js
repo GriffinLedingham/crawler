@@ -6,10 +6,11 @@ var http          = require('http').Server(app)
 var assert        = require('assert')
 var Sequelize     = require('sequelize')
 var _             = require('lodash')
+var config        = require('./config/db_config');
 
-var sequelize = new Sequelize('crawler', 'root', 'password', {
-  host: 'localhost',
-  dialect: 'mysql',
+var sequelize = new Sequelize(config.db_name, config.username, config.password, {
+  host: config.hostname,
+  dialect: config.dialect,
   pool: {
     max: 5,
     min: 0,
