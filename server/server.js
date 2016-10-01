@@ -5,8 +5,8 @@ var app           = express()
 var http          = require('http').Server(app)
 var assert        = require('assert')
 var Sequelize     = require('sequelize')
-var _             = require('lodash')
 var config        = require('./config/db_config');
+global._          = require('lodash')
 
 var sequelize = new Sequelize(config.db_name, config.username, config.password, {
   host: config.hostname,
@@ -25,13 +25,24 @@ app.use(bodyParser.urlencoded({
 }))
 http.listen(3000)
 
-global.io         = require('socket.io')(http);
+global.io       = require('socket.io')(http);
 
-var models   = require('./models')(sequelize)
+var models      = require('./models')(sequelize)
+var classes   = require('./classes')()
 
 io.on('connection', (socket) => {
   console.log('Connection.')
-  this.bindings = require('./bindings')(socket)
+
+  socket.bindings = require('./bindings')(socket)
+
+  var character = new Character({
+    'type':0,
+    'x': 64,
+    'y': 64
+  })
+
+  socket.characterId = character.getValue('id')
+  CharacterManager.addCharacter(character)
 })
 
 console.log('Server started.')

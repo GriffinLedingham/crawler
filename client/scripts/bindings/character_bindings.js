@@ -1,6 +1,5 @@
 module.exports = function (socket) {
-  socket.on('update_character', (id, data) => {
-      console.log(id)
+  socket.on('update_character', (data) => {
       console.log(data)
   })
 }
