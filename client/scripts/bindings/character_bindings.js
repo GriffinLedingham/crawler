@@ -1,12 +1,12 @@
 module.exports = function (game, socket) {
   socket.on('update_character', (data) => {
-      if ( typeof game.state.getCurrentState() !== 'undefined' && game.state.getCurrentState().stateName === 'Gameplay') {
-        var jsonData = JSON.parse(data);
+    if ( typeof game.state.getCurrentState() !== 'undefined' && game.state.getCurrentState().stateName === 'Gameplay') {
+      var jsonData = JSON.parse(data);
 
-        if (jsonData && jsonData.id !== game.state.getCurrentState().currentPlayerKey) {
-          game.state.getCurrentState().characterManager.refreshCharacter(jsonData.id, jsonData);
-        }
+      if (jsonData && jsonData.id !== game.state.getCurrentState().currentPlayerKey) {
+        game.state.getCurrentState().characterManager.refreshCharacter(jsonData.id, jsonData);
       }
+    }
   })
 
   socket.on('add_character', (data) => {
@@ -25,18 +25,13 @@ module.exports = function (game, socket) {
   })
 
   socket.on('get_all_characters', (data) => {
-
-      if (game.state.getCurrentState().stateName === 'Gameplay') {
-        var jsonData = JSON.parse(data);
-
-        _.each(jsonData, ((character, key) => {
-          game.state.getCurrentState().characterManager.addCharacter(character.data.id, character.data);
-          game.state.getCurrentState().pushCharacterIntoWorld(character.data.id);
-          if (key === 'player') {
-            game.state.getCurrentState().currentPlayerKey = character.data.id;
-          }
-        }));
-      }
+    if (game.state.getCurrentState().stateName === 'Gameplay') {
+      var jsonData = JSON.parse(data);
+      _.each(jsonData, ((character, key) => {
+        game.state.getCurrentState().characterManager.addCharacter(character.data.id, character.data);
+        game.state.getCurrentState().pushCharacterIntoWorld(character.data.id);
+      }));
+    }
   })
 
 }

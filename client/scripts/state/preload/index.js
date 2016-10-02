@@ -1,7 +1,7 @@
 module.exports = function () {
   let Preload = function () {};
 
-  Preload.prototype.init = function () {};
+  Preload.prototype.init = function (params) {this.params = params};
   Preload.prototype.preload = function () {};
   Preload.prototype.create = function () {
   this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -12,11 +12,11 @@ module.exports = function () {
 
   // enable crisp rendering
   this.game.stage.smoothed = false;
-  this.game.renderer.renderSession.roundPixels = true;  
+  this.game.renderer.renderSession.roundPixels = true;
   Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
   PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST; //for WebGL
 
-    this.game.state.start('Load');
+    this.game.state.start('Load', true, false, this.params);
   };
 
   return new Preload();

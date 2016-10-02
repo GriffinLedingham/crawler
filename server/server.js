@@ -44,6 +44,8 @@ io.on('connection', (socket) => {
 
   socket.characterId = character.getValue('id')
   CharacterManager.addCharacter(character)
+
+  socket.emit('gameplay_begin_load', socket.characterId)
 })
 
 console.log('Server started.')

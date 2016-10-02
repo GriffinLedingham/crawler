@@ -9,7 +9,10 @@ module.exports = function () {
     this.stateName = 'Gameplay';
   };
 
-  Gameplay.prototype.init = function () {};
+  Gameplay.prototype.init = function (params) {
+    this.currentPlayerKey = params.characterId
+    this.socket = params.socket
+  };
   Gameplay.prototype.preload = function () {};
   Gameplay.prototype.create = function () {
 
@@ -28,9 +31,8 @@ module.exports = function () {
 
     this.charactersInWorld = {};
 
-    this.currentPlayerKey = 'NO KEY';
-
-    this.game.socket.emit('gameplay_state_ready');
+    this.game.bindings = require('./../../bindings')(this.game, this.socket)
+    this.socket.emit('gameplay_state_ready');
 
     //this.game.time.add(1000, () => { this.game.socket.emit('update_character', {  }) });
 
@@ -70,7 +72,7 @@ module.exports = function () {
         this.characterManager.getCharacterById(this.currentPlayerKey).x = playerSprite.x;
         this.characterManager.getCharacterById(this.currentPlayerKey).y = playerSprite.y;
 
-        this.game.socket.emit( 'update_character', JSON.stringify(this.characterManager.getCharacterById(this.currentPlayerKey)) );
+        this.socket.emit( 'update_character', JSON.stringify(this.characterManager.getCharacterById(this.currentPlayerKey)) );
       }
     }
 

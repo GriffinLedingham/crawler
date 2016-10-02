@@ -33,14 +33,6 @@ CharacterManager.prototype.getCharactersJSON = function(serialize) {
   return result
 }
 
-CharacterManager.prototype.getCharactersJSONAsPlayer = function(id, serialize) {
-  var result = _.cloneDeep(this.characters)
-  result['player'] = result[id]
-  delete result[id];
-  if(typeof serialize != 'undefined' && serialize) result = JSON.stringify(result)
-  return result
-}
-
 CharacterManager.prototype.getCharacterJSON = function(id, serialize) {
   var result = this.characters[id].getJSON(serialize)
   return result
