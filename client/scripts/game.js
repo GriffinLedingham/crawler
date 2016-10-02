@@ -16,7 +16,7 @@ Game.prototype.init = function(id){
     this.game.state.add('Preload', require('./state/preload'), false);
     this.game.state.add('Load', require('./state/load'), false);
     this.game.state.add('Gameplay', require('./state/gameplay'), false);
-    this.game.state.start('Preload', false, true, {characterId: characterId, socket: socket});
+    this.game.state.start('Preload', false, true, {characterId: characterId, socket: socket, dungeon: map.dungeon});
   })
 }
 

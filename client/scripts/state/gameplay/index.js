@@ -6,15 +6,38 @@ module.exports = function () {
 
     this.currentPlayerKey = null;
 
+    this.map = null;
+    this.foreground = null;
+    this.background = null;
+
     this.stateName = 'Gameplay';
   };
 
   Gameplay.prototype.init = function (params) {
     this.currentPlayerKey = params.characterId
     this.socket = params.socket
+    this.mapdata = params.dungeon;
   };
   Gameplay.prototype.preload = function () {};
   Gameplay.prototype.create = function () {
+
+    this.map = this.game.add.tilemap();
+    this.map.addTilesetImage('tiles', 'dungeon_tiles', 32, 32);
+    this.foreground = this.map.create('foreground', this.mapdata.map_size, this.mapdata.map_size, 32, 32)
+    this.foreground.resizeWorld();
+
+    var tilespriteMap = tileMapTranslate(this.mapdata.map);
+    for (let i = 0; i < this.mapdata.map_size; i++) {
+      for (let j = 0; j < this.mapdata.map_size; j++) {
+        this.map.putTile(tilespriteMap[i][j], i, j, this.foreground);
+      }
+    }
+
+
+    this.map.setCollision([
+        tileLibrary.blank,
+        tileLibrary.wallface,tileLibrary.wallface_e,tileLibrary.wallface_w, tileLibrary.wallface_cntr,
+        tileLibrary.walltop,tileLibrary.walltop_e,tileLibrary.walltop_w, tileLibrary.walltop_cntr]);
 
     this.characterManager = require('./character_manager')();
 
@@ -38,6 +61,12 @@ module.exports = function () {
 
     //this.characterManager.removeCharacter('hip hop');
     //this.removeCharacterFromWorld('hip hop');
+
+    this.game.time.events.loop(30, () => {
+      if (this.charactersInWorld[this.currentPlayerKey]) {
+        this.socket.emit( 'update_character', JSON.stringify(this.characterManager.getCharacterById(this.currentPlayerKey)) );
+      }
+    });
 
   };
   Gameplay.prototype.update = function () {
@@ -71,8 +100,12 @@ module.exports = function () {
       if (playerMoved) {
         this.characterManager.getCharacterById(this.currentPlayerKey).x = playerSprite.x;
         this.characterManager.getCharacterById(this.currentPlayerKey).y = playerSprite.y;
+      }
 
-        this.socket.emit( 'update_character', JSON.stringify(this.characterManager.getCharacterById(this.currentPlayerKey)) );
+      this.game.physics.arcade.collide(playerSprite, this.foreground);
+
+      if (this.game.camera.target === null) {
+        this.game.camera.follow(playerSprite);
       }
     }
 
