@@ -3,6 +3,8 @@ module.exports = function () {
     this.characterSpritePool = null;
     this.characterManager = null;
     this.charactersInWorld = null;
+
+    this.stateName = 'Gameplay';
   };
 
   Gameplay.prototype.init = function () {};
@@ -10,44 +12,6 @@ module.exports = function () {
   Gameplay.prototype.create = function () {
 
     this.characterManager = require('./character_manager')();
-
-    /*
-    // dummy data
-    let dummyData = [
-      {
-        data: {
-          type: 0,
-          x: 32,
-          y: 32,
-          id: "heavy metal"
-        }
-      },{
-        data: {
-          type: 0,
-          x: 64,
-          y: 32,
-          id: "bluegrass"
-        }
-      },{
-        data: {
-          type: 0,
-          x: 320,
-          y: 240,
-          id: "future funk"
-        }
-      },{
-        data: {
-          type: 0,
-          x: 0,
-          y: 0,
-          id: "hip hop"
-        }
-      },
-    ];
-
-    dummyData.forEach((d) => {
-      this.characterManager.addCharacter(d.data.id, d);
-    }); */
 
     this.characterSpritePool = this.game.add.group();
     for (let i = 0; i < 30; i++) {
@@ -59,14 +23,14 @@ module.exports = function () {
     }
 
     this.charactersInWorld = {};
-    this.characterManager.forEachCharacter((id, character) => {
-      this.pushCharacterIntoWorld(id);
-    });
+
+    this.game.socket.emit('gameplay_state_ready');
+
+    //this.game.time.add(1000, () => { this.game.socket.emit('update_character', {  }) });
 
     //this.characterManager.removeCharacter('hip hop');
     //this.removeCharacterFromWorld('hip hop');
 
-    //this.game.time.events.loop(2000, () => { this.characterManager.refreshCharacter('future funk', { data: { id: 'future funk', x: Math.random() * this.game.width, y: Math.random() * this.game.height, type: 0 }}); });
   };
   Gameplay.prototype.update = function () {
     this.refreshCharactersInWorld();
@@ -85,8 +49,8 @@ module.exports = function () {
   Gameplay.prototype.refreshCharactersInWorld = function () {
     this.characterManager.forEachCharacter((id, character) => {
       if (this.charactersInWorld[id]) {
-        this.charactersInWorld[id].x = character.data.x;
-        this.charactersInWorld[id].y = character.data.y;
+        this.charactersInWorld[id].x = character.x;
+        this.charactersInWorld[id].y = character.y;
       }
     });
   };
