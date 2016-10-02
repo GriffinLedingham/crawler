@@ -3,26 +3,21 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="/scripts/game.js"></script>
   <script src="/scripts/libs.js"></script>
+  <link rel="stylesheet" type="text/css" href="styles/styles.css">
 </head>
 <body onload="onLoad();">
-  <div id="a">asd</div>
-
   <script>
     var game_instance = false;
-
     function start(){
       game = new Game();
       game.init('game');
     };
-
     function error_loading(e)
     {
       console.error(e);
     };
-
     function onLoad() {
       var webLoad = (document.URL.indexOf("http://") || document.URL.indexOf("https://") || document.URL.indexOf("localhost") || document.URL.indexOf("127.0.0.1") );
-
       if ( webLoad === false ) {
         document.addEventListener("deviceready", function(){ start( true ); }, false);
       } else {
