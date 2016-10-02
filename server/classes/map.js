@@ -29,7 +29,7 @@ Map.prototype.getCharacters = function(){
 
 Map.prototype.getJSON = function(serialize){
   var result = {
-    dungeon: dungeon
+    dungeon: this.dungeon
   }
   if(typeof serialize != 'undefined' && serialize) result = JSON.stringify(result)
   return result

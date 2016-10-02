@@ -6,15 +6,32 @@ module.exports = function () {
 
     this.currentPlayerKey = null;
 
+    this.map = null;
+    this.foreground = null;
+    this.background = null;
+
     this.stateName = 'Gameplay';
   };
 
   Gameplay.prototype.init = function (params) {
     this.currentPlayerKey = params.characterId
     this.socket = params.socket
+    this.mapdata = params.dungeon;
   };
   Gameplay.prototype.preload = function () {};
   Gameplay.prototype.create = function () {
+
+    this.map = this.game.add.tilemap();
+    this.map.addTilesetImage('tiles', 'dungeon_tiles', 32, 32);
+    this.foreground = this.map.create('foreground', this.mapdata.map_size, this.mapdata.map_size, 32, 32)
+    this.foreground.resizeWorld();
+
+    var tilespriteMap = tileMapTranslate(this.mapdata.map);
+    for (let i = 0; i < this.mapdata.map_size; i++) {
+      for (let j = 0; j < this.mapdata.map_size; j++) {
+        this.map.putTile(tilespriteMap[i][j], i, j, this.foreground);
+      }
+    }
 
     this.characterManager = require('./character_manager')();
 
