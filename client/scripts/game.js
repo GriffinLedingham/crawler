@@ -7,7 +7,10 @@ function Game() {
 };
 
 Game.prototype.init = function(id){
-  socket.on('gameplay_begin_load', (characterId) => {
+  socket.on('gameplay_begin_load', (data) => {
+    characterId = data.characterId
+    map = data.map
+
     this.game = new Phaser.Game(640, 480, Phaser.AUTO, '', null, false, false, Phaser.Physics.ARCADE);
 
     this.game.state.add('Preload', require('./state/preload'), false);

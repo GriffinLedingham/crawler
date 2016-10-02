@@ -6,12 +6,10 @@ function MapManager() {
 }
 
 MapManager.prototype.spawnMaps = function(){
-  fs.readdir(__dirname + '/../data/maps/', (err, files) => {
-    _.each(files,(map, key)=>{
-      console.log('Spawning Map ' + key)
-      this.maps[key] = new Map(key)
-    })
-  })
+  for(var i = 0;i<2;i++){
+    console.log('Spawning Map ' + i)
+    this.maps[i] = new Map()
+  }
 }
 
 MapManager.prototype.getMap = function(id) {
