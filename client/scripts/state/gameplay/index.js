@@ -33,6 +33,12 @@ module.exports = function () {
       }
     }
 
+
+    this.map.setCollision([
+        tileLibrary.blank,
+        tileLibrary.wallface,tileLibrary.wallface_e,tileLibrary.wallface_w, tileLibrary.wallface_cntr,
+        tileLibrary.walltop,tileLibrary.walltop_e,tileLibrary.walltop_w, tileLibrary.walltop_cntr]);
+
     this.characterManager = require('./character_manager')();
 
     this.characterSpritePool = this.game.add.group();
@@ -55,6 +61,12 @@ module.exports = function () {
 
     //this.characterManager.removeCharacter('hip hop');
     //this.removeCharacterFromWorld('hip hop');
+
+    this.game.time.events.loop(30, () => {
+      if (this.charactersInWorld[this.currentPlayerKey]) {
+        this.socket.emit( 'update_character', JSON.stringify(this.characterManager.getCharacterById(this.currentPlayerKey)) );
+      }
+    });
 
   };
   Gameplay.prototype.update = function () {
@@ -88,8 +100,12 @@ module.exports = function () {
       if (playerMoved) {
         this.characterManager.getCharacterById(this.currentPlayerKey).x = playerSprite.x;
         this.characterManager.getCharacterById(this.currentPlayerKey).y = playerSprite.y;
+      }
 
-        this.socket.emit( 'update_character', JSON.stringify(this.characterManager.getCharacterById(this.currentPlayerKey)) );
+      this.game.physics.arcade.collide(playerSprite, this.foreground);
+
+      if (this.game.camera.target === null) {
+        this.game.camera.follow(playerSprite);
       }
     }
 

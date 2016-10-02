@@ -37,8 +37,8 @@ io.on('connection', (socket) => {
 
   var character = new Character({
     'type'  :0,
-    'x'     : 64,
-    'y'     : 64,
+    'x'     : 128,
+    'y'     : 128,
     'map'   : '0'
   })
 
