@@ -4,6 +4,8 @@ module.exports = function () {
     this.characterManager = null;
     this.charactersInWorld = null;
 
+    this.currentPlayerKey = null;
+
     this.stateName = 'Gameplay';
   };
 
@@ -18,11 +20,15 @@ module.exports = function () {
       let testsprite = this.game.add.sprite(100, 100, 'test_sheet_image16x32', 16);
       testsprite.animations.add('go', [16, 17], 4, true);
       testsprite.animations.play('go');
+      this.game.physics.enable(testsprite, Phaser.Physics.ARCADE);
+
       this.characterSpritePool.addChild(testsprite);
       testsprite.kill();
     }
 
     this.charactersInWorld = {};
+
+    this.currentPlayerKey = 'NO KEY';
 
     this.game.socket.emit('gameplay_state_ready');
 
@@ -33,12 +39,49 @@ module.exports = function () {
 
   };
   Gameplay.prototype.update = function () {
+    let playerSprite = this.charactersInWorld[this.currentPlayerKey];
+
+    if (playerSprite) {
+      let HACK_WalkSpeed = 100;
+
+      let playerMoved = false;
+
+      if (this.game.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
+        playerSprite.body.velocity.x = HACK_WalkSpeed;
+        playerMoved = true;
+      } else if (this.game.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {
+        playerSprite.body.velocity.x = -HACK_WalkSpeed;
+        playerMoved = true;
+      } else {
+        playerSprite.body.velocity.x = 0;
+      }
+
+      if (this.game.input.keyboard.isDown(Phaser.KeyCode.DOWN)) {
+        playerSprite.body.velocity.y = HACK_WalkSpeed;
+        playerMoved = true;
+      } else if (this.game.input.keyboard.isDown(Phaser.KeyCode.UP)) {
+        playerSprite.body.velocity.y = -HACK_WalkSpeed;
+        playerMoved = true;
+      } else {
+        playerSprite.body.velocity.y = 0;
+      }
+
+      if (playerMoved) {
+        this.characterManager.getCharacterById(this.currentPlayerKey).x = playerSprite.x;
+        this.characterManager.getCharacterById(this.currentPlayerKey).y = playerSprite.y;
+
+        this.game.socket.emit( 'update_character', JSON.stringify(this.characterManager.getCharacterById(this.currentPlayerKey)) );
+      }
+    }
+
     this.refreshCharactersInWorld();
   };
   Gameplay.prototype.pushCharacterIntoWorld = function (id) {
     let characterSprite = this.characterSpritePool.getFirstDead();
     characterSprite.revive();
     this.charactersInWorld[id] = characterSprite;
+    characterSprite.x = this.characterManager.getCharacterById(id).x;
+    characterSprite.y = this.characterManager.getCharacterById(id).y;
   };
   Gameplay.prototype.removeCharacterFromWorld = function (id) {
     if (this.charactersInWorld[id]) {

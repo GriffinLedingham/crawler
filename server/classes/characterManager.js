@@ -10,9 +10,9 @@ CharacterManager.prototype.addCharacter = function(character) {
 }
 
 CharacterManager.prototype.updateCharacter = function(data) {
-  if(!this.characters.hasOwnProperty(data.getValue('id'))) return false
-  var character = this.characters[data.getValue('id')]
-  this.characters[data.getValue('id')] = character.updateData(data)
+  if(!this.characters.hasOwnProperty(data['id'])) return false
+  var character = this.characters[data['id']]
+  this.characters[data['id']] = character.updateData(data)
   io.sockets.emit('update_character', character.getJSON(true))
   return true
 }
@@ -21,6 +21,7 @@ CharacterManager.prototype.removeCharacter = function(id) {
   console.log(id)
   if(!this.characters.hasOwnProperty(id)) return false
   delete this.characters[id]
+  io.sockets.emit('remove_character', id)
   console.log(this.characters)
   return true
 }
@@ -31,9 +32,16 @@ CharacterManager.prototype.getCharactersJSON = function(serialize) {
   return result
 }
 
-CharacterManager.prototype.getCharacterJSON = function(id, serialize) {
-  var result = this.characters[id]
+CharacterManager.prototype.getCharactersJSONAsPlayer = function(id, serialize) {
+  var result = _.cloneDeep(this.characters)
+  result['player'] = result[id]
+  delete result[id];
   if(typeof serialize != 'undefined' && serialize) result = JSON.stringify(result)
+  return result
+}
+
+CharacterManager.prototype.getCharacterJSON = function(id, serialize) {
+  var result = this.characters[id].getJSON(serialize)
   return result
 }
 
