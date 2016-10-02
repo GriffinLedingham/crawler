@@ -6,7 +6,7 @@ function Dungeon() {
     this.tree = []
     this.stack = []
     this.gid = 1
-    this.minRoomSize = 5
+    this.minRoomSize = 10
     this.minSizeFactor = 0.4
 };
 
@@ -225,13 +225,15 @@ Dungeon.prototype.joinRooms = function () {
 
 Dungeon.prototype.print = function () {
     console.log("DUNGEON");
+
+
     for (var x = 0; x < this.map_size; x++) {
         var row = x;
 
         if(x<10){row+='  ';} else {row+=' ';}
 
         for (var y = 0; y < this.map_size; y++) {
-            row += this.map[x][y] + ' ';
+            row += (this.map[x][y] == 0?' ':this.map[x][y]) + ' ';
         }
         console.log(row);
     }

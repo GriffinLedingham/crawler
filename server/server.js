@@ -37,10 +37,12 @@ io.on('connection', (socket) => {
 
   var character = new Character({
     'type'  :0,
-    'x'     : 128,
-    'y'     : 128,
     'map'   : '0'
   })
+
+  var map = MapManager.getMap(character.getValue('map'))
+  character.setValue('x', map.dungeon.getRooms()[0].center.x*32)
+  character.setValue('y', map.dungeon.getRooms()[0].center.y*32)
 
   socket.characterId = character.getValue('id')
   CharacterManager.addCharacter(character)

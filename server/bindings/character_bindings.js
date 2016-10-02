@@ -3,8 +3,8 @@ module.exports = function (socket) {
     CharacterManager.updateCharacter(JSON.parse(data))
   })
 
-  socket.on('get_all_characters', () => {
-    socket.emit('get_all_characters', CharacterManager.getCharactersJSON(true))
+  socket.on('get_all_characters', (mapId) => {
+    socket.emit('get_all_characters', MapManager.getMapCharactersJSON(mapId, true))
   })
 
   socket.on('disconnect', () => {

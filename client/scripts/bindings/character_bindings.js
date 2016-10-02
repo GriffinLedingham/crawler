@@ -28,8 +28,8 @@ module.exports = function (game, socket) {
     if (game.state.getCurrentState().stateName === 'Gameplay') {
       var jsonData = JSON.parse(data);
       _.each(jsonData, ((character, key) => {
-        game.state.getCurrentState().characterManager.addCharacter(character.data.id, character.data);
-        game.state.getCurrentState().pushCharacterIntoWorld(character.data.id);
+        game.state.getCurrentState().characterManager.addCharacter(character.id, character);
+        game.state.getCurrentState().pushCharacterIntoWorld(character.id);
       }));
     }
   })
