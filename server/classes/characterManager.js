@@ -5,7 +5,7 @@ function CharacterManager() {
 CharacterManager.prototype.addCharacter = function(character) {
   if(this.characters.hasOwnProperty(character.getValue('id'))) return false
   this.characters[character.getValue('id')] = character
-  console.log(this.characters)
+  MapManager.getMap(character.getValue('map')).addCharacter(character)
   return true
 }
 
@@ -20,8 +20,8 @@ CharacterManager.prototype.updateCharacter = function(data) {
 CharacterManager.prototype.removeCharacter = function(id) {
   console.log(id)
   if(!this.characters.hasOwnProperty(id)) return false
+  MapManager.getMap(this.characters[id].getValue('map')).removeCharacter(id)
   delete this.characters[id]
-  console.log(this.characters)
   return true
 }
 
