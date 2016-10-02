@@ -36,9 +36,10 @@ io.on('connection', (socket) => {
   socket.bindings = require('./bindings')(socket)
 
   var character = new Character({
-    'type':0,
-    'x': 64,
-    'y': 64
+    'type'  :0,
+    'x'     : 64,
+    'y'     : 64,
+    'map'   : '0'
   })
 
   socket.characterId = character.getValue('id')
