@@ -46,6 +46,8 @@ module.exports = function () {
       let testsprite = this.game.add.sprite(100, 100, 'test_sheet_image16x32', 16);
       testsprite.animations.add('go', [16, 17], 4, true);
       testsprite.animations.play('go');
+      testsprite.prevSendX = testsprite.x;
+      testsprite.prevSendY = testsprite.y;
       this.game.physics.enable(testsprite, Phaser.Physics.ARCADE);
 
       this.characterSpritePool.addChild(testsprite);
@@ -64,7 +66,12 @@ module.exports = function () {
 
     this.game.time.events.loop(30, () => {
       if (this.charactersInWorld[this.currentPlayerKey]) {
-        this.socket.emit( 'update_character', JSON.stringify(this.characterManager.getCharacterById(this.currentPlayerKey)) );
+        if (( Math.abs(this.charactersInWorld[this.currentPlayerKey].prevSendX - this.charactersInWorld[this.currentPlayerKey].x) > 0.00001) ||
+          ( (Math.abs(this.charactersInWorld[this.currentPlayerKey].prevSendY - this.charactersInWorld[this.currentPlayerKey].y) > 0.00001))) {
+          this.charactersInWorld[this.currentPlayerKey].prevSendX = this.charactersInWorld[this.currentPlayerKey].x;
+          this.charactersInWorld[this.currentPlayerKey].prevSendY = this.charactersInWorld[this.currentPlayerKey].y;
+          this.socket.emit( 'update_character', JSON.stringify(this.characterManager.getCharacterById(this.currentPlayerKey)) );
+        }
       }
     });
 
